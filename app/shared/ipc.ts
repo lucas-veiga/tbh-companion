@@ -43,6 +43,10 @@ export const IPC = {
   UPDATE_DOWNLOAD: "update-download",
   UPDATE_QUIT_AND_INSTALL: "update-quit-and-install",
 
+  // Buy orders
+  BUY_ORDERS: "buy-orders",
+  GET_BUY_ORDERS: "get-buy-orders",
+
   // Send (renderer → main, no response)
   RESET: "reset",
   OPEN_OVERLAY: "open-overlay",
@@ -89,6 +93,7 @@ export const IPC_INVOKE_CHANNELS = [
   IPC.UPDATE_CHECK,
   IPC.UPDATE_DOWNLOAD,
   IPC.UPDATE_QUIT_AND_INSTALL,
+  IPC.GET_BUY_ORDERS,
 ] as const;
 
 export const IPC_SEND_CHANNELS = [
@@ -111,4 +116,5 @@ export const IPC_PUSH_CHANNELS = [
   IPC.PRICES_PROGRESS,
   IPC.PRICE_STATUS,
   IPC.UPDATE_STATUS,
+  IPC.BUY_ORDERS,
 ] as const;

@@ -172,6 +172,9 @@ export interface ResolvedInventoryRow {
   inventoryCount: number;
   stashCount: number;
   tradingCount: number;
+  buyOrderPrice: number | null;
+  buyOrderPriceRaw: string | null;
+  buyOrderChecked: boolean;
 }
 
 export interface InventoryPriceInfo {
@@ -179,6 +182,18 @@ export interface InventoryPriceInfo {
   lowest: number | null;
   rawMedian: string | null;
   rawLowest: string | null;
+}
+
+export interface BuyOrderEntry {
+  marketHashName: string;
+  highestBuyOrder: number | null;
+  rawHighestBuyOrder: string | null;
+  fetchedUtc: string;
+}
+
+export interface BuyOrderUpdate {
+  entries: BuyOrderEntry[];
+  currency: string;
 }
 
 export interface InventoryComposition {
@@ -538,4 +553,6 @@ export interface TbhApi {
   downloadUpdate(): Promise<UpdateStatus>;
   quitAndInstall(): Promise<void>;
   onUpdateStatus(cb: (status: UpdateStatus) => void): () => void;
+  getBuyOrders(): Promise<BuyOrderUpdate>;
+  onBuyOrders(cb: (update: BuyOrderUpdate) => void): () => void;
 }

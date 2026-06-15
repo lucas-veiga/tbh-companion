@@ -34,6 +34,7 @@ describe("IPC channel registry", () => {
     expect(preload).toContain("IPC.UPDATE_CHECK");
     expect(preload).toContain("IPC.UPDATE_DOWNLOAD");
     expect(preload).toContain("IPC.UPDATE_QUIT_AND_INSTALL");
+    expect(preload).toContain("IPC.GET_BUY_ORDERS");
   });
 
   it("IPC handlers wire invoke and send channels", () => {
@@ -58,6 +59,8 @@ describe("IPC channel registry", () => {
     expect(updateHandler).toContain("IPC.UPDATE_CHECK");
     expect(updateHandler).toContain("IPC.UPDATE_DOWNLOAD");
     expect(updateHandler).toContain("IPC.UPDATE_QUIT_AND_INSTALL");
+    const buyOrdersHandler = readHandler("buyOrders");
+    expect(buyOrdersHandler).toContain("IPC.GET_BUY_ORDERS");
   });
 
   it("services broadcast on IPC push constants", () => {
@@ -97,6 +100,11 @@ describe("IPC channel registry", () => {
       "utf-8",
     );
     expect(updates).toContain("IPC.UPDATE_STATUS");
+    const buyOrderSvc = readFileSync(
+      join(__dirname, "../../src/main/services/buyOrderService.ts"),
+      "utf-8",
+    );
+    expect(buyOrderSvc).toContain("IPC.BUY_ORDERS");
   });
 
   it("preload uses send channels via IPC constants", () => {
