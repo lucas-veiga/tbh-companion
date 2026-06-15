@@ -8,6 +8,7 @@ import type { ResolvedInventoryRow } from "../../../../shared/types";
 import { Button } from "../ui/Button";
 import { Card } from "../ui/Card";
 import { cn } from "../../lib/cn";
+import type { SortKey } from "../../lib/inventoryFilters";
 
 function priceSourceTitle(source: ResolvedInventoryRow["priceSource"]): string | undefined {
   if (source === "median") return "Recent sale median on Steam Market";
@@ -31,11 +32,9 @@ function emptyPriceDisplay(row: ResolvedInventoryRow): { label: string; title: s
 export interface InventoryTableProps {
   rows: ResolvedInventoryRow[];
   currency: string;
-  sortKey: "name" | "grade" | "level" | "type" | "count" | "inUse" | "price" | "value";
+  sortKey: SortKey;
   sortDir: "asc" | "desc";
-  onSort: (
-    key: "name" | "grade" | "level" | "type" | "count" | "inUse" | "price" | "value",
-  ) => void;
+  onSort: (key: SortKey) => void;
   onClearFilters: () => void;
 }
 
@@ -159,6 +158,23 @@ const InventoryRow = memo(function InventoryRow({
           "-"
         )}
       </td>
+      <td className={tdNumClass}>
+        {row.marketHashName ? (
+          !row.buyOrderChecked ? (
+            <span className="text-muted">Loading…</span>
+          ) : row.buyOrderPriceRaw ? (
+            <MarketListingLink hash={row.marketHashName}>
+              {row.buyOrderPriceRaw}
+            </MarketListingLink>
+          ) : (
+            <MarketListingLink hash={row.marketHashName}>
+              <span className="text-muted">No orders</span>
+            </MarketListingLink>
+          )
+        ) : (
+          <span className="text-muted">—</span>
+        )}
+      </td>
     </tr>
   );
 });
@@ -209,12 +225,16 @@ export function InventoryTable({
               Value
               <SortArrow active={sortKey === "value"} dir={sortDir} />
             </th>
+            <th className={thNumClass} onClick={() => onSort("buyOrder")}>
+              Buy Order
+              <SortArrow active={sortKey === "buyOrder"} dir={sortDir} />
+            </th>
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={9} className="px-3 py-6 text-center text-muted">
+              <td colSpan={10} className="px-3 py-6 text-center text-muted">
                 No items match these filters.{" "}
                 <Button size="sm" className="ml-1.5" onClick={onClearFilters}>
                   Clear filters
