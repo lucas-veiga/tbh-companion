@@ -11,6 +11,7 @@ import { registerChestHandlers, registerBoxTimerHandlers } from "./handlers/ches
 import { registerNotificationHandlers } from "./handlers/notifications";
 import { registerPetHandlers } from "./handlers/pets";
 import { registerUpdateHandlers } from "./handlers/update";
+import { registerBuyOrderHandlers } from "./handlers/buyOrders";
 
 export function registerIpc(services: AppServices): void {
   registerStatsHandlers(ipcMain, services);
@@ -25,4 +26,5 @@ export function registerIpc(services: AppServices): void {
   registerLogHandlers(ipcMain, services);
   registerUpdateHandlers(ipcMain, services);
   registerNotificationHandlers(ipcMain, services);
+  registerBuyOrderHandlers(ipcMain, services);
 }

@@ -24,6 +24,11 @@ export class InventoryService {
   private lastInventory: ResolvedInventory | null = null;
   private priceRefreshQueued = false;
   private priceRefreshForceQueued = false;
+  private onInventoryResolvedCb?: (marketHashNames: string[]) => void;
+
+  setOnInventoryResolved(cb: (marketHashNames: string[]) => void): void {
+    this.onInventoryResolvedCb = cb;
+  }
 
   initMarket(currency: string): void {
     this.market = new SteamMarketProvider(currency);
@@ -159,6 +164,7 @@ export class InventoryService {
       this.lastInventory.currency = currency;
       this.lastInventory.composition.currency = currency;
       broadcast(IPC.INVENTORY, this.lastInventory);
+      this.onInventoryResolvedCb?.(this.currentOwnedMarketNames());
     } catch (err) {
       log.error(`resolveAndPushInventory failed: ${String(err)}`);
     }

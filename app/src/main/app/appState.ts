@@ -13,6 +13,7 @@ import { clearDiagnosticLogs, createLogger, logRendererError } from "../log";
 import { clearAppDataFiles, getAppDataPaths } from "../services/appData";
 import { UpdateService } from "../services/UpdateService";
 import { NotificationService } from "../services/NotificationService";
+import { BuyOrderService } from "../services/buyOrderService";
 import type {
   AppDataClearTarget,
   BoxTrackerSortOrder,
@@ -23,6 +24,7 @@ import type {
 import type { NotificationSoundId } from "../../../shared/notificationCatalog";
 
 const appDataLog = createLogger("appData");
+const buyOrders = new BuyOrderService("USD");
 import { createMainWindow as buildMainWindow } from "../windows/mainWindow";
 import { createOverlayWindow as buildOverlayWindow } from "../windows/overlayWindow";
 import { createBoxTrackerWindow as buildBoxTrackerWindow } from "../windows/boxTrackerWindow";
@@ -96,6 +98,8 @@ function persistWindowLayout<K extends keyof WindowLayoutPrefs>(
 
 export function startTracking(): SessionUiSnapshot {
   config = loadConfig();
+  buyOrders.setCurrency(config.currency);
+  inventory.setOnInventoryResolved((names) => void buyOrders.queue(names));
   inventory.initMarket(config.currency);
   inventory.loadGameData();
   const ui = sessionState.load(config);
@@ -199,9 +203,11 @@ export function getAppServices() {
     pricesStatus: () => inventory.pricesStatus(),
     refreshPrices: (force?: boolean) => inventory.refreshPrices(force),
     cancelPrices: () => inventory.cancelPrices(),
+    getBuyOrders: () => buyOrders.getCurrentState(),
     setCurrency: (iso: string) => {
       config.currency = iso;
       saveConfig(config);
+      buyOrders.setCurrency(iso);
       return inventory.setCurrency(iso);
     },
     getConfig: () => ({ ...config }),
