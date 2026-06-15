@@ -5,6 +5,7 @@ import type {
   AppDataPaths,
   AppConfig,
   BoxTimerState,
+  BuyOrderUpdate,
   ChestState,
   ClearAppDataResult,
   ClearDiagnosticLogResult,
@@ -179,6 +180,14 @@ const api: TbhApi = {
     const listener = (_e: unknown, status: UpdateStatus): void => cb(status);
     ipcRenderer.on(IPC.UPDATE_STATUS, listener);
     return () => ipcRenderer.removeListener(IPC.UPDATE_STATUS, listener);
+  },
+  getBuyOrders(): Promise<BuyOrderUpdate> {
+    return ipcRenderer.invoke(IPC.GET_BUY_ORDERS);
+  },
+  onBuyOrders(cb: (update: BuyOrderUpdate) => void): () => void {
+    const listener = (_e: unknown, update: BuyOrderUpdate): void => cb(update);
+    ipcRenderer.on(IPC.BUY_ORDERS, listener);
+    return () => ipcRenderer.removeListener(IPC.BUY_ORDERS, listener);
   },
 };
 
