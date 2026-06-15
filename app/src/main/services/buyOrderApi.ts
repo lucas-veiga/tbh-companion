@@ -9,10 +9,10 @@ export function parseItemNameId(html: string): number | null {
 }
 
 /** Parse itemordershistogram JSON response. Exported for testing. */
-export function parseHistogramResponse(data: {
-  success?: number;
-  highest_buy_order?: string;
-}): { highestBuyOrder: number | null; rawHighestBuyOrder: string | null } {
+export function parseHistogramResponse(data: { success?: number; highest_buy_order?: string }): {
+  highestBuyOrder: number | null;
+  rawHighestBuyOrder: string | null;
+} {
   if (!data.success) return { highestBuyOrder: null, rawHighestBuyOrder: null };
   const raw = data.highest_buy_order ?? null;
   return { highestBuyOrder: parseMoney(raw), rawHighestBuyOrder: raw };

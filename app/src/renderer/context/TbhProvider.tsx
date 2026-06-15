@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState, startTransition, type ReactNode } from "react";
-import type { Stats, ResolvedInventory, PriceStatus, PriceProgress, BuyOrderUpdate } from "../../../shared/types";
+import type {
+  Stats,
+  ResolvedInventory,
+  PriceStatus,
+  PriceProgress,
+  BuyOrderUpdate,
+} from "../../../shared/types";
 import { formatPriceRefreshMessage } from "../lib/formatPriceRefreshMessage";
 import { reportIpcError } from "../lib/reportError";
 import { TbhContext } from "./tbhContext";

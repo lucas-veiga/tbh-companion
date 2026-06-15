@@ -26,7 +26,7 @@ export function loadBuyOrderCache(currency: string): BuyOrderCache {
   const path = buyOrderCachePath(currency);
   if (existsSync(path)) {
     try {
-      const raw = readFileSync(path, "utf-8").replace(/^﻿/, "");
+      const raw = readFileSync(path, "utf-8").replace(/^\uFEFF/, "");
       const c = JSON.parse(raw) as BuyOrderCache;
       if (c && typeof c.entries === "object") return c;
     } catch {

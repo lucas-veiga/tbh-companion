@@ -163,9 +163,7 @@ const InventoryRow = memo(function InventoryRow({
           !row.buyOrderChecked ? (
             <span className="text-muted">Loading…</span>
           ) : row.buyOrderPriceRaw ? (
-            <MarketListingLink hash={row.marketHashName}>
-              {row.buyOrderPriceRaw}
-            </MarketListingLink>
+            <MarketListingLink hash={row.marketHashName}>{row.buyOrderPriceRaw}</MarketListingLink>
           ) : (
             <MarketListingLink hash={row.marketHashName}>
               <span className="text-muted">No orders</span>

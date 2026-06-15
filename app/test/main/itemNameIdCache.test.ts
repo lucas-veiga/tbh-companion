@@ -9,9 +9,8 @@ vi.mock("electron", () => ({
   app: { getPath: () => testDir },
 }));
 
-const { loadItemNameIds, saveItemNameIds } = await import(
-  "../../src/main/services/itemNameIdCache"
-);
+const { loadItemNameIds, saveItemNameIds } =
+  await import("../../src/main/services/itemNameIdCache");
 
 afterEach(() => {
   if (existsSync(testDir)) rmSync(testDir, { recursive: true });

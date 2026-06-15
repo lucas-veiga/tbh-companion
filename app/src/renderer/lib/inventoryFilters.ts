@@ -2,7 +2,16 @@ import { GRADE_ORDER, GRADE_RANK } from "../../core/grades";
 import { rowMatchesLocation } from "../../core/inventory/location";
 import type { ItemLocation, ResolvedInventory, ResolvedInventoryRow } from "../../../shared/types";
 
-export type SortKey = "name" | "grade" | "level" | "type" | "count" | "inUse" | "price" | "value" | "buyOrder";
+export type SortKey =
+  | "name"
+  | "grade"
+  | "level"
+  | "type"
+  | "count"
+  | "inUse"
+  | "price"
+  | "value"
+  | "buyOrder";
 export type LocationFilter = "ALL" | ItemLocation;
 
 export interface InventoryFilterState {
