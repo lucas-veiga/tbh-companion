@@ -106,6 +106,9 @@ function createResolvedRow(
     priceSource: market.unit.source,
     priceChecked: market.priceChecked,
     value: null,
+    buyOrderPrice: null,
+    buyOrderPriceRaw: null,
+    buyOrderChecked: false,
   };
 }
 
