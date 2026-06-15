@@ -1,3 +1,4 @@
+import { net } from "electron";
 import type { BuyOrderEntry, BuyOrderUpdate } from "../../../shared/types";
 import { IPC } from "../../../shared/ipc";
 import { broadcast } from "./broadcast";
@@ -86,7 +87,7 @@ export class BuyOrderService {
         // Step 1: get item_nameid (cached or fetch listing page)
         let nameId = this.itemNameIds[name];
         if (nameId === undefined) {
-          const r = await fetchItemNameId(name);
+          const r = await fetchItemNameId(name, undefined, net.fetch.bind(net));
           if (this.cancelled) break;
 
           if (r.status === 429) {
