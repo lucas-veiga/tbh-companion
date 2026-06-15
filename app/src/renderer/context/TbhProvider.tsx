@@ -1,8 +1,25 @@
 import { useEffect, useMemo, useState, startTransition, type ReactNode } from "react";
-import type { Stats, ResolvedInventory, PriceStatus, PriceProgress } from "../../../shared/types";
+import type { Stats, ResolvedInventory, PriceStatus, PriceProgress, BuyOrderUpdate } from "../../../shared/types";
 import { formatPriceRefreshMessage } from "../lib/formatPriceRefreshMessage";
 import { reportIpcError } from "../lib/reportError";
 import { TbhContext } from "./tbhContext";
+
+function mergeBuyOrders(inv: ResolvedInventory, update: BuyOrderUpdate): ResolvedInventory {
+  if (update.entries.length === 0) return inv;
+  const byHash = new Map(update.entries.map((e) => [e.marketHashName, e]));
+  const rows = inv.rows.map((row) => {
+    if (!row.marketHashName) return row;
+    const e = byHash.get(row.marketHashName);
+    if (!e) return row;
+    return {
+      ...row,
+      buyOrderPrice: e.highestBuyOrder,
+      buyOrderPriceRaw: e.rawHighestBuyOrder,
+      buyOrderChecked: true,
+    };
+  });
+  return { ...inv, rows };
+}
 
 export function TbhProvider({ children }: { children: ReactNode }) {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -14,15 +31,27 @@ export function TbhProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let mounted = true;
 
-    void Promise.all([window.tbh.getStats(), window.tbh.getInventory(), window.tbh.pricesStatus()])
-      .then(([s, inv, ps]) => {
+    function applyBuyOrders(update: BuyOrderUpdate): void {
+      setInventory((prev) => (prev ? mergeBuyOrders(prev, update) : prev));
+    }
+
+    void Promise.all([
+      window.tbh.getStats(),
+      window.tbh.getInventory(),
+      window.tbh.pricesStatus(),
+      window.tbh.getBuyOrders(),
+    ])
+      .then(([s, inv, ps, buyOrderUpdate]) => {
         if (!mounted) return;
         if (s) setStats(s);
-        if (inv) setInventory(inv);
+        if (inv) setInventory(mergeBuyOrders(inv, buyOrderUpdate));
         setPriceStatus(ps);
       })
       .catch(reportIpcError);
 
+    const offBuyOrders = window.tbh.onBuyOrders((update) => {
+      if (mounted) applyBuyOrders(update);
+    });
     const offStats = window.tbh.onStats((s) => setStats(s));
     const offInventory = window.tbh.onInventory((inv) => setInventory(inv));
     const offPriceStatus = window.tbh.onPriceStatus((ps) => {
@@ -61,6 +90,7 @@ export function TbhProvider({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false;
+      offBuyOrders();
       offStats();
       offInventory();
       offPriceStatus();
