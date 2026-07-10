@@ -1,3 +1,10 @@
+> [!WARNING]
+> This fork is discontinued. It explored a "buy orders" feature that the
+> upstream project has since implemented natively, in a more complete form
+> (order-book depth, coverage value, and average price — not just the top
+> price). Please use the original project instead:
+> **[lucasfevi/tbh-companion](https://github.com/lucasfevi/tbh-companion)**.
+
 # TBH Companion
 
 A desktop companion app for the idle game **TBH: Task Bar Hero**. It reads your
